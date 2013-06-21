@@ -1,0 +1,11 @@
+require 'rubygems'
+require 'sinatra'
+
+set :sessions, true
+ 
+get "/home"
+  "Hi, Welcome!!!"
+end
+end
+
+

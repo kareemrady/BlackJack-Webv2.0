@@ -1,0 +1,14 @@
+img.img_cards{
+
+	margin-right: 20px;
+}
+
+form#hit_form{
+	float: left;
+	margin-right: 10px;
+}
+
+form#stay_form{
+	float: right;
+	margin-left: 5px;
+}
