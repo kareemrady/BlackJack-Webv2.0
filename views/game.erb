@@ -1,15 +1,20 @@
+<% if @display_welcome_message == true%>
+
 <h1>Hi <%= session[:player_name].capitalize%>, Welcome to BlackJack </h1>
 <br/>
+<% end %>
 
 <% if @play_again == true %>
 
 <p>Would you like to play another game ?</p>
+<div class = "well">
 <form id="yes" action="/" >
 	<input type="submit" class="btn btn-success " value="Yes" />
 </form>
 	<form id="no" action="/game_over" >
 	<input type="submit" class="btn btn-warning " value="No" />
 </form>
+</div>
 <% end %>
 
 

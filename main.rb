@@ -46,6 +46,7 @@ end
 
 def player_busted?
 if calc_total(session[:player_cards]) > 21
+	@display_welcome_message = false
 	@error = "Sorry #{session[:player_name].capitalize} you have busted!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
@@ -56,6 +57,7 @@ end
 
 def dealer_busted?
 	if calc_total(session[:dealer_cards]) > 21
+		@display_welcome_message = false
 	@success = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
@@ -66,6 +68,7 @@ end
 
 def dealer_blackjack?
 if calc_total(session[:dealer_cards]) == 21
+	@display_welcome_message = false
 	@error = "Sorry #{session[:player_name].capitalize}, Dealer hit blackjack!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
@@ -75,6 +78,7 @@ end
 end
 def player_blackjack?
 if calc_total(session[:player_cards]) == 21
+	@display_welcome_message = false
 	@success = "Congratulations #{session[:player_name].capitalize}, you hit blackjack!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
@@ -85,6 +89,7 @@ end
 def draw?
 if calc_total(session[:player_cards]) == calc_total(session[:dealer_cards])
 	@error = "It's a Draw!!!"
+	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
@@ -95,11 +100,13 @@ end
 def who_won?
 if (calc_total(session[:player_cards]) - 21).abs  < (calc_total(session[:dealer_cards]) - 21).abs 
 	@success = "Congratulations #{session[:player_name].capitalize}, you win!!!"
+	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
 else 
 	@error = "Sorry #{session[:player_name].capitalize}, Dealer wins!!!"
+	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
@@ -110,7 +117,7 @@ end
 end
 
 before do
-
+	@display_welcome_message = true
 	@show_hit_stay = true
 	@show_cards_dealer = false
 	@show_dealer_hit = false
