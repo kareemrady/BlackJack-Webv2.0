@@ -17,6 +17,22 @@
 		<%end%>
 
 <%end%>
+<% if @show_dealer_score == true%>
+<p>
+<h4>Dealer Score is <%= calc_total(session[:dealer_cards])%></h4>
+</p>
+<% end %>
+<% if @show_dealer_hit == true %>
+<div>
+	<p>
+<form id ="hit_form" action="/dealer/hit" method="post">
+	<input type="submit" class="btn btn-primary &rarr;" value="Deal a card for the dealer" />
+
+
+</form>
+</p>
+</div>
+<% end %>
 
 <br/>
 </div>
@@ -31,10 +47,10 @@
 </div>
 <% if @show_hit_stay == true %>
 <h3>What would you like to do?</h3>
-<form id ="hit_form" action="/hit" method="post">
+<form id ="hit_form" action="/game/player/hit" method="post">
 	<input type="submit" class="btn btn-success" value="Hit" />
 </form>
-<form id="post_form" action="/stay" method="post">
+<form id="post_form" action="/game/player/stay" method="post">
 	<input type="submit" class="btn btn-warning" value="Stay" />
 </form>
 <%end%>
