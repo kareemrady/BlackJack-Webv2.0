@@ -1,0 +1,5 @@
+<h3>Hi <%= session[:player_name].capitalize %>, you have $<%= session[:player_pot]%>, please place your bet below</h3>
+<form action="/bet" method="post">
+	<input type="text" name="player_bet" />
+	<input type="submit" class="btn btn-primary" value="submit" />
+</form>

@@ -46,8 +46,9 @@ end
 
 def player_busted?
 if calc_total(session[:player_cards]) > 21
+	session[:player_pot] -= session[:player_bet]
 	@display_welcome_message = false
-	@error = "Sorry #{session[:player_name].capitalize} you have busted!!!"
+	@error = "Sorry #{session[:player_name].capitalize} you have busted!!!, you now have #{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
@@ -57,19 +58,22 @@ end
 
 def dealer_busted?
 	if calc_total(session[:dealer_cards]) > 21
+		session[:player_pot] += session[:player_bet]
 		@display_welcome_message = false
-	@success = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!"
+	@success = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!, you now have #{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
+	
 	
 end
 end
 
 def dealer_blackjack?
 if calc_total(session[:dealer_cards]) == 21
+	session[:player_pot] -= session[:player_bet]
 	@display_welcome_message = false
-	@error = "Sorry #{session[:player_name].capitalize}, Dealer hit blackjack!!!"
+	@error = "Sorry #{session[:player_name].capitalize}, Dealer hit blackjack!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
@@ -78,17 +82,20 @@ end
 end
 def player_blackjack?
 if calc_total(session[:player_cards]) == 21
+	session[:player_pot] += session[:player_bet]
 	@display_welcome_message = false
-	@success = "Congratulations #{session[:player_name].capitalize}, you hit blackjack!!!"
+	@success = "Congratulations #{session[:player_name].capitalize}, you hit blackjack!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
+	
 		
 end
 end
 def draw?
 if calc_total(session[:player_cards]) == calc_total(session[:dealer_cards])
-	@error = "It's a Draw!!!"
+	session[:player_pot]
+	@error = "It's a Draw!!!, you now have #{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
@@ -99,17 +106,21 @@ end
 
 def who_won?
 if (calc_total(session[:player_cards]) - 21).abs  < (calc_total(session[:dealer_cards]) - 21).abs 
-	@success = "Congratulations #{session[:player_name].capitalize}, you win!!!"
+	session[:player_pot]+= session[:player_bet]
+	@success = "Congratulations #{session[:player_name].capitalize}, you win!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
+	
 else 
-	@error = "Sorry #{session[:player_name].capitalize}, Dealer wins!!!"
+	session[:player_pot] -= session[:player_bet]
+	@error = "Sorry #{session[:player_name].capitalize}, Dealer wins!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
+	
 
 end
 end
@@ -136,7 +147,7 @@ end
 end
 	
 get "/new_player" do
-	
+	session[:player_pot] = 500
 	erb :new_player
 end
 
@@ -147,8 +158,28 @@ post "/new_player" do
 		halt erb(:new_player)
 	else
 		session[:player_name] = params[:player_name]
- redirect '/game'
-	erb :game
+ redirect '/bet'
+	
+end
+end
+
+get '/bet' do
+	
+	erb :bet
+end
+
+post '/bet' do
+	
+	if params[:player_bet].to_i.nil? || params[:player_bet].to_i == 0
+		@error = "Your bet cannot be left blank & cannot be Zero"
+		halt erb(:bet)
+	elsif params[:player_bet].to_i > session[:player_pot]
+		@error = "Your bet cannot be greater than #{session[:player_pot]}"
+		halt erb(:bet)
+	else 
+		session[:player_bet] = params[:player_bet].to_i
+		redirect '/game'
+
 end
 end
 
