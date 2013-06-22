@@ -106,7 +106,7 @@ end
 
 def who_won?
 if (calc_total(session[:player_cards]) - 21).abs  < (calc_total(session[:dealer_cards]) - 21).abs 
-	session[:player_pot]+= session[:player_bet]
+	session[:player_pot] += session[:player_bet]
 	@success = "Congratulations #{session[:player_name].capitalize}, you win!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
@@ -157,7 +157,7 @@ post "/new_player" do
 		@error = "Name field cannot be blank"
 		halt erb(:new_player)
 	else
-		session[:player_name] = params[:player_name]
+		
  redirect '/bet'
 	
 end
@@ -198,11 +198,14 @@ get '/game' do
 	session[:dealer_cards] << session[:deck].pop
 	session[:player_score] = calc_total(session[:player_cards])
 	session[:dealer_score] = calc_total(session[:dealer_cards])
-	player_busted?
-	player_blackjack?
-	dealer_busted?
-	dealer_blackjack?
-	
+	if player_busted?
+	elsif 
+		player_blackjack?
+	elsif 
+		dealer_busted?
+	else 
+		dealer_blackjack?
+	end
 
 
 	erb :game
@@ -210,8 +213,10 @@ end
 
 post '/game/player/hit' do
 	session[:player_cards] << session[:deck].pop
-	player_busted?
-	player_blackjack?
+	if player_busted?
+	else
+		player_blackjack?
+	end
 	
 	erb :game
 end
@@ -231,8 +236,10 @@ get '/game/dealer' do
 	@show_cards_dealer = true
 @show_hit_stay = false
 @show_dealer_hit = true
-dealer_blackjack?
-dealer_busted?
+if dealer_blackjack?
+else
+	dealer_busted?
+end
 if calc_total(session[:dealer_cards]) >= 17
 	redirect '/game/compare'
 else
