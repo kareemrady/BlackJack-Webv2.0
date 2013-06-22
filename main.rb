@@ -49,6 +49,7 @@ if calc_total(session[:player_cards]) > 21
 	@error = "Sorry #{session[:player_name].capitalize} you have busted!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@play_again = true
 	
 end
 end
@@ -58,23 +59,26 @@ def dealer_busted?
 	@success = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@play_again = true
 	
 end
 end
 
 def dealer_blackjack?
 if calc_total(session[:dealer_cards]) == 21
-	@error = "Sorry #{session[:player_name].capitalize} Dealer hit blackjack!!!"
+	@error = "Sorry #{session[:player_name].capitalize}, Dealer hit blackjack!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@play_again = true
 	
 end
 end
 def player_blackjack?
 if calc_total(session[:player_cards]) == 21
-	@success = "Congratulations #{session[:player_name].capitalize} you hit blackjack!!!"
+	@success = "Congratulations #{session[:player_name].capitalize}, you hit blackjack!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@play_again = true
 		
 end
 end
@@ -83,19 +87,22 @@ if calc_total(session[:player_cards]) == calc_total(session[:dealer_cards])
 	@error = "It's a Draw!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@play_again = true
 		
 end
 end
 
 def who_won?
 if (calc_total(session[:player_cards]) - 21).abs  < (calc_total(session[:dealer_cards]) - 21).abs 
-	@success = "Congratulations #{session[:player_name]} you win!!!"
+	@success = "Congratulations #{session[:player_name].capitalize}, you win!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@play_again = true
 else 
-	@error = "Sorry #{session[:player_name]} Dealer wins!!!"
+	@error = "Sorry #{session[:player_name].capitalize}, Dealer wins!!!"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@play_again = true
 
 end
 end
@@ -108,6 +115,7 @@ before do
 	@show_cards_dealer = false
 	@show_dealer_hit = false
 	@show_dealer_score = false
+	@play_again = false
 	
 end
 
@@ -219,4 +227,10 @@ get '/game/compare' do
 	who_won?
 end
 	erb :game
+end
+
+get '/game_over' do
+
+	erb :game_over
+
 end

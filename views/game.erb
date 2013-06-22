@@ -1,5 +1,18 @@
 <h1>Hi <%= session[:player_name].capitalize%>, Welcome to BlackJack </h1>
 <br/>
+
+<% if @play_again == true %>
+
+<p>Would you like to play another game ?</p>
+<form id="yes" action="/" >
+	<input type="submit" class="btn btn-success " value="Yes" />
+</form>
+	<form id="no" action="/game_over" >
+	<input type="submit" class="btn btn-warning " value="No" />
+</form>
+<% end %>
+
+
 <div class="well">
 <h3>Dealer's Cards</h3>
 <br/>
@@ -25,10 +38,8 @@
 <% if @show_dealer_hit == true %>
 <div>
 	<p>
-<form id ="hit_form" action="/dealer/hit" method="post">
-	<input type="submit" class="btn btn-primary &rarr;" value="Deal a card for the dealer" />
-
-
+<form action="/dealer/hit" method="post">
+	<input type="submit" class="btn btn-primary " value="Deal a card for the dealer &rarr;" />
 </form>
 </p>
 </div>

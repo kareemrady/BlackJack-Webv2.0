@@ -12,3 +12,14 @@ form#stay_form{
 	float: right;
 	margin-left: 5px;
 }
+
+form#yes{
+
+	float: left;
+	margin-right: 10px;
+}
+form#no{
+
+	float: right;
+	margin-left: 5px;
+}
