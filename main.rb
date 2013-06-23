@@ -48,7 +48,7 @@ def player_busted?
 if calc_total(session[:player_cards]) > 21
 	session[:player_pot] -= session[:player_bet]
 	@display_welcome_message = false
-	@error = "Sorry #{session[:player_name].capitalize} you have busted!!!, you now have $#{session[:player_pot]}"
+	@loser = "Sorry #{session[:player_name].capitalize} you have busted!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
@@ -61,7 +61,7 @@ def dealer_busted?
 	if calc_total(session[:dealer_cards]) > 21
 		session[:player_pot] += session[:player_bet]
 		@display_welcome_message = false
-	@success = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!, you now have $#{session[:player_pot]}"
+	@winner = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@show_dealer_score = true
@@ -76,7 +76,7 @@ def dealer_blackjack?
 if calc_total(session[:dealer_cards]) == 21
 	session[:player_pot] -= session[:player_bet]
 	@display_welcome_message = false
-	@error = "Sorry #{session[:player_name].capitalize}, Dealer hit blackjack!!!, you now have $#{session[:player_pot]}"
+	@loser = "Sorry #{session[:player_name].capitalize}, Dealer hit blackjack!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@show_dealer_score = true
@@ -88,7 +88,7 @@ def player_blackjack?
 if calc_total(session[:player_cards]) == 21
 	session[:player_pot] += session[:player_bet]
 	@display_welcome_message = false
-	@success = "Congratulations #{session[:player_name].capitalize}, you hit blackjack!!!, you now have $#{session[:player_pot]}"
+	@winner = "Congratulations #{session[:player_name].capitalize}, you hit blackjack!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@show_dealer_score = true
@@ -100,7 +100,7 @@ end
 def draw?
 if calc_total(session[:player_cards]) == calc_total(session[:dealer_cards])
 	session[:player_pot]
-	@error = "It's a Draw!!!, you now have $#{session[:player_pot]}"
+	@loser = "It's a Draw!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
@@ -113,16 +113,17 @@ end
 def who_won?
 if (calc_total(session[:player_cards]) - 21).abs  < (calc_total(session[:dealer_cards]) - 21).abs 
 	session[:player_pot] += session[:player_bet]
-	@success = "Congratulations #{session[:player_name].capitalize}, you win!!!, you now have $#{session[:player_pot]}"
+	@winner = "Congratulations #{session[:player_name].capitalize}, you win!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@show_dealer_score = true
 	@play_again = true
+
 	
 else 
 	session[:player_pot] -= session[:player_bet]
-	@error = "Sorry #{session[:player_name].capitalize}, Dealer wins!!!, you now have $#{session[:player_pot]}"
+	@loser = "Sorry #{session[:player_name].capitalize}, Dealer wins!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_dealer_score = true
@@ -130,6 +131,12 @@ else
 	@play_again = true
 	
 
+end
+end
+
+def game_over?
+if session[:player_pot] == 0
+	redirect '/game_over'
 end
 end
 
@@ -216,7 +223,7 @@ get '/game' do
 	else 
 		dealer_blackjack?
 	end
-
+	game_over?
 
 	erb :game
 end
@@ -227,8 +234,8 @@ post '/game/player/hit' do
 	else
 		player_blackjack?
 	end
-	
-	erb :game
+		game_over?
+	erb :game, layout: false
 end
 
 post '/game/player/stay' do
@@ -236,7 +243,7 @@ post '/game/player/stay' do
 	@success = "You Chose to Stay"
 	@show_hit_stay = false
 	redirect '/game/dealer'
-erb :game
+erb :game, layout: false
 end
 
 # dealer's turn
@@ -255,7 +262,7 @@ if calc_total(session[:dealer_cards]) >= 17
 else
 	@show_dealer_hit = true
 	redirect '/game/dealer/hit'
-
+	game_over?
 end
 end
 
@@ -265,26 +272,36 @@ get '/game/dealer/hit' do
 	@show_cards_dealer = true
 	@show_hit_stay = false
 	@show_dealer_hit = true
-	erb :game
+	erb :game, layout: false
 end
 
-post '/dealer/hit' do
+post '/game/dealer/hit' do
 	session[:dealer_cards] << session[:deck].pop
 	redirect '/game/dealer'
 end
 
 get '/game/compare' do
 	
-
 	if draw?
 	else
 	who_won?
 end
-	erb :game
+game_over?
+	erb :game, layout: false
 end
 
 get '/game_over' do
 
 	erb :game_over
 
+end
+
+get '/about' do
+
+	erb :about
+
+end
+
+get '/contact' do
+	erb :contact
 end

@@ -5,12 +5,12 @@ img.img_cards{
 
 form#hit_form{
 	float: left;
-	margin-right: 10px;
+
 }
 
-form#stay_form{
+form#post_form{
 	float: right;
-	margin-left: 5px;
+
 }
 
 form#yes{
@@ -23,3 +23,8 @@ form#no{
 	float: right;
 	
 }
+
+p.about {
+	margin:10px 0;
+}
+

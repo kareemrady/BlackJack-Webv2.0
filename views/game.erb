@@ -1,8 +1,15 @@
-<% if @display_welcome_message == true%>
+<div id="game">
+	<% if @display_welcome_message == true%>
 
 <h1>Hi <%= session[:player_name].capitalize%>, Welcome to BlackJack </h1>
 <br/>
 <% end %>
+<%if @loser %>
+      <div class="alert alert-error"><%=@loser%></div>
+    <% end %>
+    <%if @winner %>
+      <div class="alert alert-success"><%=@winner%></div>
+    <% end %>
 
 <% if @play_again == true %>
 
@@ -22,7 +29,7 @@
 <% end %>
 
 
-<div class="well">
+<div id="dealer_cards" class="well">
 <h3>Dealer's Cards</h3>
 <br/>
 <% if @show_cards_dealer == true %>
@@ -41,13 +48,13 @@
 <%end%>
 <% if @show_dealer_score == true%>
 <p>
-<h4>Dealer Score is <%= calc_total(session[:dealer_cards])%></h4>
+<h4>Dealer's Score is <%= calc_total(session[:dealer_cards])%></h4>
 </p>
 <% end %>
 <% if @show_dealer_hit == true %>
 <div>
 	<p>
-<form action="/dealer/hit" method="post">
+<form id="dealer_hit" action="/game/dealer/hit" method="post">
 	<input type="submit" class="btn btn-primary " value="Deal a card for the dealer &rarr;" />
 </form>
 </p>
@@ -56,17 +63,18 @@
 
 <br/>
 </div>
-<div class="well">
+<div id="player_cards" class="well">
 <h3><%= session[:player_name].capitalize%>'s Cards</h3>
 <br/>
 <% session[:player_cards].each do |card| %>
 <%= show_card(card) %>
 <%end%>
 <br />
-<h4><%= session[:player_name].capitalize%> your score is: <%= calc_total(session[:player_cards])%></h4>
+<h4><%= session[:player_name].capitalize%> your score is <%= calc_total(session[:player_cards])%></h4>
 </div>
 <% if @show_hit_stay == true %>
 <h3>What would you like to do?</h3>
+<div class="span2">
 <form id ="hit_form" action="/game/player/hit" method="post">
 	<input type="submit" class="btn btn-success" value="Hit" />
 </form>
@@ -74,3 +82,5 @@
 	<input type="submit" class="btn btn-warning" value="Stay" />
 </form>
 <%end%>
+</div>
+</div>
