@@ -48,10 +48,11 @@ def player_busted?
 if calc_total(session[:player_cards]) > 21
 	session[:player_pot] -= session[:player_bet]
 	@display_welcome_message = false
-	@error = "Sorry #{session[:player_name].capitalize} you have busted!!!, you now have #{session[:player_pot]}"
+	@error = "Sorry #{session[:player_name].capitalize} you have busted!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
 	@play_again = true
+	@show_dealer_score = true
 	
 end
 end
@@ -60,10 +61,12 @@ def dealer_busted?
 	if calc_total(session[:dealer_cards]) > 21
 		session[:player_pot] += session[:player_bet]
 		@display_welcome_message = false
-	@success = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!, you now have #{session[:player_pot]}"
+	@success = "Congratulations #{session[:player_name].capitalize} Dealer busted!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@show_dealer_score = true
 	@play_again = true
+	
 	
 	
 end
@@ -76,6 +79,7 @@ if calc_total(session[:dealer_cards]) == 21
 	@error = "Sorry #{session[:player_name].capitalize}, Dealer hit blackjack!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@show_dealer_score = true
 	@play_again = true
 	
 end
@@ -87,6 +91,7 @@ if calc_total(session[:player_cards]) == 21
 	@success = "Congratulations #{session[:player_name].capitalize}, you hit blackjack!!!, you now have $#{session[:player_pot]}"
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@show_dealer_score = true
 	@play_again = true
 	
 		
@@ -95,10 +100,11 @@ end
 def draw?
 if calc_total(session[:player_cards]) == calc_total(session[:dealer_cards])
 	session[:player_pot]
-	@error = "It's a Draw!!!, you now have #{session[:player_pot]}"
+	@error = "It's a Draw!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@show_dealer_score = true
 	@play_again = true
 		
 end
@@ -111,6 +117,7 @@ if (calc_total(session[:player_cards]) - 21).abs  < (calc_total(session[:dealer_
 	@display_welcome_message = false
 	@show_hit_stay = false
 	@show_cards_dealer = true
+	@show_dealer_score = true
 	@play_again = true
 	
 else 
@@ -118,6 +125,7 @@ else
 	@error = "Sorry #{session[:player_name].capitalize}, Dealer wins!!!, you now have $#{session[:player_pot]}"
 	@display_welcome_message = false
 	@show_hit_stay = false
+	@show_dealer_score = true
 	@show_cards_dealer = true
 	@play_again = true
 	
@@ -139,6 +147,7 @@ end
 
  
  get "/" do
+ 	
  	if session[:player_name]
  		redirect '/game'
  	else
@@ -147,12 +156,13 @@ end
 end
 	
 get "/new_player" do
+	
 	session[:player_pot] = 500
 	erb :new_player
 end
 
 post "/new_player" do
-	
+	session[:player_name] = params[:player_name]
 	if params[:player_name].empty?
 		@error = "Name field cannot be blank"
 		halt erb(:new_player)
@@ -264,8 +274,7 @@ post '/dealer/hit' do
 end
 
 get '/game/compare' do
-	@show_dealer_score = true
-	@show_cards_dealer = true
+	
 
 	if draw?
 	else

@@ -7,13 +7,17 @@
 <% if @play_again == true %>
 
 <p>Would you like to play another game ?</p>
+<div class="row">
+	<div class="span3">
 <div class = "well">
-<form id="yes" action="/bet" >
+	<form id="yes" action="/bet" >
 	<input type="submit" class="btn btn-success " value="Yes" />
 </form>
 	<form id="no" action="/game_over" >
-	<input type="submit" class="btn btn-warning " value="No" />
+	<input type="submit" class="btn btn-danger " value="No" />
 </form>
+</div>
+</div>
 </div>
 <% end %>
 
